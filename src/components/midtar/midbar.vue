@@ -31,12 +31,15 @@
 
 <script setup lang="ts">
 
-import {onMounted, reactive, ref} from 'vue';
+import {onMounted, reactive, ref ,defineComponent} from 'vue';
 import type {imageUrl} from "@/components/midtar/type";
 import {GetImageUrlAndTitile as getUrl} from "@/components/midtar/index"
 const value4 = ref(0);
 const imageUrls:imageUrl[] = reactive<imageUrl[]>([]);
 
+defineComponent({
+  name: 'midbar' // 组件名称
+});
 onMounted(() => {
     GetImageUrlAndTitile();
 })

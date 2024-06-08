@@ -11,7 +11,7 @@
       radius="5"
       bgColor="#ffffff"
       :height="200"
-      keyName="image"
+      keyName="url"
       showTitle
     ></up-swiper>
   </view>
@@ -30,8 +30,8 @@
           @click="handleClick(item, index)"
           style="margin-left: 1%;"
         >
-          <image class="scroll-list__goods-item__image" :src="item.thumb"></image>
-          <text style="font-size: 10px;">{{ item.price }}</text>
+          <image class="scroll-list__goods-item__image" :src="item.url"></image>
+          <text style="font-size: 10px;">{{ item.text }}</text>
         </view>
         <view class="scroll-list__show-more">
           <text class="scroll-list__show-more__text">查看更多</text>
@@ -54,58 +54,28 @@ import { reactive } from "vue";
 import type { imageUrl } from '@/pages/home/type';
 import midbar from "@/components/midtar/midbar.vue";
 import waterfall from "@/components/Waterfall/Waterfall.vue";
+import { onMounted } from "vue";
+import {GetImageUrlAndTitle} from "@/pages/home/api"
 
-const listswiper = reactive<imageUrl[]>([
-  {
-    image: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66542bd795522.png',
-    title: '昨夜星辰昨夜风，画楼西畔桂堂东'
-  },
-  {
-    image: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66542bc978155.png',
-    title: '身无彩凤双飞翼，心有灵犀一点通'
-  },
-  {
-    image: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66542bb7ed12e.png',
-    title: '疏影横斜水清浅，暗香浮动月黄昏'
-  },
-  {
-    image: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66542a8237b84.png',
-    title: '月落乌啼霜满天，江枫渔火对愁眠'
-  }
-]);
+const listswiper = reactive<imageUrl[]>([]);
 
-const list = reactive([
-  {
-    price: '实用中文专区',
-    thumb: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66546afa83b0f.jpg',
-    active: false
-  },
-  {
-    price: '成人英语专区',
-    thumb: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66546b06742ba.jpg',
-    active: false
-  },
-  {
-    price: '学术专区',
-    thumb: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66546b06d5d41.jpg',
-    active: false
-  },
-  {
-    price: '国际中文专区',
-    thumb: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66546b08bdd11.jpg',
-    active: false
-  },
-  {
-    price: '中文课程专区',
-    thumb: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/66546f67ea368.jpg',
-    active: false
-  },
-  {
-    price: '中文教材专区',
-    thumb: 'http://114.132.222.183:5244/p/HLP/images/2024/05/27/665471c14a3e2.jpg',
-    active: false
+const list = reactive<imageUrl[]>([]);
+
+onMounted(async()=>{
+  try {
+    GetImageUrlAndTitle(1).then((res:any) => {
+      listswiper.push(...res.data) ;
+      for(let mid of listswiper){
+        mid.title = mid.text;
+      }
+    });
+    GetImageUrlAndTitle(2).then((res:any) => {
+      list.push(...res.data) ;
+    });
+  } catch (error) {
+    console.log(error);
   }
-]);
+})
 
 const left = () => {
   console.log('left');
@@ -184,4 +154,4 @@ const handleClick = (item: any, index: number) => {
     }
   }
 }
-</style>
+</style>@/pages/home/api

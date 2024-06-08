@@ -11,41 +11,24 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import type { Item } from "@/components/Waterfall/type";
+import { GetImageUrlAndTitle } from "@/components/Waterfall/api";
 
-const items: Item[] = reactive([
-  {
-    url: 'http://114.132.222.183:5244/p/HLP/images/2024/05/28/6655470128740.webp',
-    title: 'HSK一级小白班|考季立减40元',
-    nexttitle: '超100节直播+录播课手把手教学',
-  },
-  {
-    url:'http://114.132.222.183:5244/p/HLP/images/2024/05/28/6655470128740.webp',
-    title: "HSK二级进阶班 | 考季立减50元",
-    nexttitle: "超150节直播+录播课全程辅导"
-  },
-  {
-    url:'http://114.132.222.183:5244/p/HLP/images/2024/05/28/6655470128740.webp',
-    title: "HSK三级精英班 | 报名立减60元",
-    nexttitle: "200+节课程配备专项练习"
-  },
-  {
-    url:'http://114.132.222.183:5244/p/HLP/images/2024/05/28/6655470128740.webp',
-    title: "HSK四级高手班 | 新用户立减70元",
-    nexttitle: "超300节直播+录播课深度解析"
-  },
-  {
-    url:'http://114.132.222.183:5244/p/HLP/images/2024/05/28/6655470128740.webp',
-    title: "HSK五级菁英班 | 限时立减80元",
-    nexttitle: "专属教师团队+丰富的课程资源"
-  },
-  {
-    url:'http://114.132.222.183:5244/p/HLP/images/2024/05/28/6655470128740.webp',
-    title: "HSK六级大师班 | 注册立减100元",
-    nexttitle: "超400节直播+录播课全方位教学"
+const items: Item[] = reactive<Item[]>([]);
+
+onMounted(async()=>{
+  const res:any = await GetImageUrlAndTitle(3);
+  for(let item of res.data){
+    let pushdat = {
+      url: item.url,
+      title: item.text,
+      nexttitle: item.nextText
+    }
+    items.push(pushdat);
   }
-]);
+})
+
 </script>
 
 <style>
