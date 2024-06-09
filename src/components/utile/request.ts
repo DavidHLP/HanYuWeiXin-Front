@@ -1,4 +1,4 @@
-const baseURL = 'http://localhost:8088/';
+const baseURL = 'http://localhost:8080/';
 const SC_UNAUTHORIZED = 401;
 
 const request = (options: any) => {
@@ -7,7 +7,7 @@ const request = (options: any) => {
     const token = uni.getStorageSync('token');
 
     // 未登录且请求URL不是以 'api/login' 开头
-    if (!token && !options.url.startsWith('api/login')) {
+    if (!token && !options.url.startsWith('api/login') && !options.url.startsWith('api/register')){
       console.log('未登录，请登录');
       uni.switchTab({
         url: '/pages/login/index'
@@ -37,7 +37,7 @@ const request = (options: any) => {
         if (newToken) {
           uni.setStorageSync('token', newToken);
         }
-        uni.switchTab({
+        uni.reLaunch({
           url: '/pages/home/index'
         });
         resolve(response.data);
@@ -58,7 +58,7 @@ const request = (options: any) => {
         resolve(response.data);
       } else if (response.statusCode === SC_UNAUTHORIZED) {
         console.log('未授权，请登录');
-        uni.switchTab({
+        uni.reLaunch({
           url: '/pages/login/index'
         });
         reject(new Error('Unauthorized'));
@@ -67,6 +67,19 @@ const request = (options: any) => {
         reject(new Error(response.errMsg || 'Request failed'));
       }
     };
+
+        // 处理注册请求的逻辑
+        const handleRegisterRequest = (response: any) => {
+          if (response.statusCode === 200) {
+            uni.reLaunch({
+              url: '/pages/login/index'
+            });
+            resolve(response.data);
+          } else {
+            console.error('响应错误', response);
+            reject(new Error(response.errMsg || 'Request failed'));
+          }
+        };
 
     // 发起请求
     uni.request({
@@ -78,7 +91,10 @@ const request = (options: any) => {
       success: (response) => {
         if (options.url.startsWith('api/login')) {
           handleLoginRequest(response);
-        } else {
+        }else if (options.url.startsWith('api/register')) {
+          handleRegisterRequest(response);
+        } 
+        else {
           handleNonLoginRequest(response);
         }
       },

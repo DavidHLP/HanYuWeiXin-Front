@@ -1,5 +1,4 @@
-export interface LoginUser {
-    username: string; // 用户名
+export interface RegisterUser {
     password: string; // 密码
     nickname?: string; // 昵称（可选字段）
     email?: string; // 邮箱（可选字段）

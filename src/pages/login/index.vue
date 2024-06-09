@@ -9,11 +9,10 @@
 			<input placeholder="请输入您的密码" maxlength="18" type="password" v-model="loginUser.password"/>
 		</view>
 		<view class="login-btn" @click="login()">
-			确认登录
+			登录
 		</view>
 		<view class="function-link">
-			<text @click="register">新用户注册</text>
-			<text @click="forget">忘记密码</text>
+			<text @click="register()">注册</text>
 		</view>
 	</view>
 </template>
@@ -35,9 +34,9 @@ const login = async() => {
 };
 
 const register = () => {
-};
-
-const forget = () => {
+  uni.navigateTo({
+     url: '/pages/register/index' 
+    })
 };
 </script>
 

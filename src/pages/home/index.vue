@@ -49,33 +49,39 @@
 </template>
 
 <script setup lang="ts">
+import { reactive, onMounted, getCurrentInstance } from "vue";
+import { onShow } from "@dcloudio/uni-app";  // 确保引入了 @dcloudio/uni-app
 import tarb from "@/components/tabbar/tabbar.vue";
-import { reactive } from "vue";
-import type { imageUrl } from '@/pages/home/type';
 import midbar from "@/components/midtar/midbar.vue";
 import waterfall from "@/components/Waterfall/Waterfall.vue";
-import { onMounted } from "vue";
-import {GetImageUrlAndTitle} from "@/pages/home/api"
+import { GetImageUrlAndTitle } from "@/pages/home/api";
+import type { imageUrl } from '@/pages/home/type';
 
 const listswiper = reactive<imageUrl[]>([]);
-
 const list = reactive<imageUrl[]>([]);
 
-onMounted(async()=>{
+const fetchData = async () => {
   try {
-    GetImageUrlAndTitle(1).then((res:any) => {
-      listswiper.push(...res.data) ;
-      for(let mid of listswiper){
-        mid.title = mid.text;
-      }
-    });
-    GetImageUrlAndTitle(2).then((res:any) => {
-      list.push(...res.data) ;
-    });
+    const res1:any = await GetImageUrlAndTitle(1);
+    listswiper.splice(0, listswiper.length, ...res1.data);
+    for (let mid of listswiper) {
+      mid.title = mid.text;
+    }
+
+    const res2:any = await GetImageUrlAndTitle(2);
+    list.splice(0, list.length, ...res2.data);
   } catch (error) {
     console.log(error);
   }
-})
+};
+
+onMounted(() => {
+  fetchData();
+});
+
+onShow(() => {
+  fetchData();
+});
 
 const left = () => {
   console.log('left');
@@ -88,6 +94,7 @@ const right = () => {
 const handleClick = (item: any, index: number) => {
   console.log(item, index);
 };
+
 </script>
 
 <style lang="scss" scoped>

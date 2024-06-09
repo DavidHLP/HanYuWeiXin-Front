@@ -30,25 +30,33 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, reactive, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app';  // 确保引入 onShow 钩子
+import type { imageUrl } from "@/components/midtar/type";
+import { GetImageUrlAndTitle } from "@/components/midtar/index";
 
-import {onMounted, reactive, ref ,defineComponent} from 'vue';
-import type {imageUrl} from "@/components/midtar/type";
-import {GetImageUrlAndTitile as getUrl} from "@/components/midtar/index"
 const value4 = ref(0);
-const imageUrls:imageUrl[] = reactive<imageUrl[]>([]);
+const imageUrls = reactive<imageUrl[]>([]);
 
-defineComponent({
-  name: 'midbar' // 组件名称
-});
+const fetchImageUrls = async () => {
+  try {
+    const res: any = await GetImageUrlAndTitle(4);
+    imageUrls.splice(0, imageUrls.length, ...res.data.map((mid: any) => ({
+      image: mid.url,
+      title: mid.text
+    })));
+  } catch (error) {
+    console.error("数据获取失败", error);
+  }
+};
+
 onMounted(() => {
-    GetImageUrlAndTitile();
-})
+  fetchImageUrls();
+});
 
-const GetImageUrlAndTitile = async () => {
-    const res = await getUrl();
-    imageUrls.push(...res);
-    console.log(imageUrls);
-}
+onShow(() => {
+  fetchImageUrls();
+});
 
 </script>
 

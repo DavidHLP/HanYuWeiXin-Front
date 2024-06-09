@@ -12,22 +12,32 @@
 
 <script lang="ts" setup>
 import { ref, reactive, onMounted } from "vue";
+import { onShow } from "@dcloudio/uni-app"; // 引入 onShow 钩子
 import type { Item } from "@/components/Waterfall/type";
 import { GetImageUrlAndTitle } from "@/components/Waterfall/api";
 
-const items: Item[] = reactive<Item[]>([]);
+const items = reactive<Item[]>([]);
 
-onMounted(async()=>{
-  const res:any = await GetImageUrlAndTitle(3);
-  for(let item of res.data){
-    let pushdat = {
+const fetchItems = async () => {
+  try {
+    const res:any = await GetImageUrlAndTitle(3);
+    items.splice(0, items.length, ...res.data.map((item: any) => ({
       url: item.url,
       title: item.text,
       nexttitle: item.nextText
-    }
-    items.push(pushdat);
+    })));
+  } catch (error) {
+    console.error("数据获取失败", error);
   }
-})
+};
+
+onMounted(() => {
+  fetchItems();
+});
+
+onShow(() => {
+  fetchItems();
+});
 
 </script>
 
