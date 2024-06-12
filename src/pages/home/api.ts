@@ -1,4 +1,4 @@
-import request from "@/components/utile/request";
+import {request} from "@/components/utile/request";
 
 const BaseUrl = 'images/';
 

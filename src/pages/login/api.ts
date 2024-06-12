@@ -1,4 +1,4 @@
-import request from "@/components/utile/request";
+import {request} from "@/components/utile/request";
 import type { LoginUser } from "@/pages/login/type";
 const BaseUrl = 'api/';
 export const loginTo = (loginform:LoginUser)=>{
